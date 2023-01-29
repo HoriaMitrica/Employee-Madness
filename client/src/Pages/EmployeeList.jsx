@@ -12,7 +12,7 @@ const deleteEmployee = (id) => {
   );
 };
 
-const EmployeeList = () => {
+const EmployeeList = ({nameFilter}) => {
   const [loading, setLoading] = useState(true);
   const [data, setData] = useState(null);
 
@@ -32,7 +32,10 @@ const EmployeeList = () => {
     fetchEmployees(controller.signal)
       .then((employees) => {
         setLoading(false);
-        setData(employees);
+        if(nameFilter!==undefined)
+        setData(employees.filter(employee=>employee.name.indexOf(nameFilter)!==-1));
+        else
+          setData(employees)
       })
       .catch((error) => {
         if (error.name !== "AbortError") {

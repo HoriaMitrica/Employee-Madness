@@ -39,6 +39,10 @@ const router = createBrowserRouter([
         path: "/form-test",
         element: <FormTest />,
       },
+      {
+        path: "/robert",
+        element: <EmployeeList nameFilter={"Robert"}/>,
+      }
     ],
   },
 ]);
