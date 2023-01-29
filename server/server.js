@@ -4,7 +4,7 @@ const mongoose = require("mongoose");
 const EmployeeModel = require("./db/employee.model");
 
 const { MONGO_URL, PORT = 8080 } = process.env;
-
+console.log(process.env.MONGO_URL)
 if (!MONGO_URL) {
   console.error("Missing MONGO_URL environment variable");
   process.exit(1);

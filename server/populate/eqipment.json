@@ -1,0 +1,27 @@
+[
+    {
+        "name": "n1",
+        "type": "t1",
+        "amount": 10
+    },
+    {
+        "name": "n2",
+        "type": "t2",
+        "amount": 10
+    },
+    {
+        "name": "n3",
+        "type": "t3",
+        "amount": 10
+    },
+    {
+        "name": "n4",
+        "type": "t4",
+        "amount": 10
+    },
+    {
+        "name": "n5",
+        "type": "t4",
+        "amount": 10
+    }
+]
