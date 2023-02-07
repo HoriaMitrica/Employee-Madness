@@ -20,3 +20,13 @@ Content-Type:  application/json
 {
   "name": "Adam"
 }
+###
+
+POST http://localhost:8080/api/equipments/
+Content-Type: application/json
+
+{
+  "name": "n9",
+  "type": "t1",
+  "amount": 30
+}

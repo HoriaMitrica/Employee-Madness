@@ -1,11 +1,12 @@
 import { useEffect } from "react";
 import { useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams, useLocation } from "react-router-dom";
 import EmployeeForm from "../Components/EmployeeForm";
+import EquipmentForm from "../Components/EquipmentForm";
 import Loading from "../Components/Loading";
 
-const updateEmployee = (employee) => {
-  return fetch(`/api/employees/${employee._id}`, {
+const updateEmployee = (employee, action) => {
+  return fetch(`/api/${action}/${employee._id}`, {
     method: "PATCH",
     headers: {
       "Content-Type": "application/json",
@@ -14,21 +15,21 @@ const updateEmployee = (employee) => {
   }).then((res) => res.json());
 };
 
-const fetchEmployee = (id) => {
-  return fetch(`/api/employees/${id}`).then((res) => res.json());
+const fetchEmployee = (id, action) => {
+  return fetch(`/api/${action}/${id}`).then((res) => res.json());
 };
 
-const EmployeeUpdater = () => {
+const EmployeeUpdater = ({ action }) => {
   const { id } = useParams();
   const navigate = useNavigate();
-
+  const equipments = useLocation().state.equipments
   const [employee, setEmployee] = useState(null);
   const [updateLoading, setUpdateLoading] = useState(false);
   const [employeeLoading, setEmployeeLoading] = useState(true);
 
   useEffect(() => {
     setEmployeeLoading(true);
-    fetchEmployee(id)
+    fetchEmployee(id, action)
       .then((employee) => {
         setEmployee(employee);
         setEmployeeLoading(false);
@@ -40,9 +41,10 @@ const EmployeeUpdater = () => {
 
   const handleUpdateEmployee = (employee) => {
     setUpdateLoading(true);
-    updateEmployee(employee)
+    updateEmployee(employee, action)
       .then(() => {
-        navigate("/");
+        action === "equipments" ? navigate("/equipments")
+          : navigate("/")
       })
       .catch((error) => {
         throw error;
@@ -57,12 +59,24 @@ const EmployeeUpdater = () => {
   }
 
   return (
-    <EmployeeForm
-      employee={employee}
-      onSave={handleUpdateEmployee}
-      disabled={updateLoading}
-      onCancel={() => navigate("/")}
-    />
+    <>
+      {action === "employees"
+        ? <EmployeeForm
+          equipments={equipments}
+          employee={employee}
+          onSave={handleUpdateEmployee}
+          disabled={updateLoading}
+          onCancel={() => navigate("/")}
+        />
+        : action === "equipments" ?
+          <EquipmentForm
+            equipment={employee}
+            onSave={handleUpdateEmployee}
+            disabled={updateLoading}
+            onCancel={() => navigate("/equipments")}
+          />
+          : null}
+    </>
   );
 };
 

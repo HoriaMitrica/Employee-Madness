@@ -12,6 +12,7 @@ import EmployeeUpdater from "./Pages/EmployeeUpdater";
 import "./index.css";
 import TableTest from "./Pages/TableTest";
 import FormTest from "./Pages/FormTest";
+import EquipmentList from "./Pages/EquipmentList";
 
 const router = createBrowserRouter([
   {
@@ -25,11 +26,11 @@ const router = createBrowserRouter([
       },
       {
         path: "/create",
-        element: <EmployeeCreator />,
+        element: <EmployeeCreator action={"employees"}/>,
       },
       {
         path: "/update/:id",
-        element: <EmployeeUpdater />,
+        element: <EmployeeUpdater action={"employees"}/>,
       },
       {
         path: "/table-test",
@@ -42,6 +43,18 @@ const router = createBrowserRouter([
       {
         path: "/robert",
         element: <EmployeeList nameFilter={"Robert"}/>,
+      },
+      {
+        path: "/create/equipment",
+        element: <EmployeeCreator action={"equipments"}/>,
+      },
+      {
+        path: "/equipments",
+        element: <EquipmentList/>,
+      },
+      {
+        path: "/equipment/update/:id",
+        element: <EmployeeUpdater action={"equipments"}/>,
       }
     ],
   },

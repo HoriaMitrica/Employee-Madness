@@ -1,9 +1,13 @@
-import { Link } from "react-router-dom";
+import { Link,useNavigate } from "react-router-dom";
 import "./EmployeeTable.css";
 import { useState, useRef } from "react"
-const EmployeeTable = ({ employees, onDelete }) => {
-  const [filteredEmployees, setFilteredEmployees] = useState(employees);
-
+const EmployeeTable = ({ headers, employees, onDelete,equipments }) => {
+  console.log(equipments)
+  const navigate=useNavigate();
+  let maxPages = Math.ceil(employees.length / 10)
+  const [page, setPage] = useState(1);
+  const [filteredEmployees, setFilteredEmployees] = useState(employees.slice((page - 1) * 10, page * 10));
+  let pageEmployees = [...employees.slice((page - 1) * 10, page * 10)]
   const levelRef = useRef();
   const positionRef = useRef();
   function compare(property) {
@@ -23,25 +27,26 @@ const EmployeeTable = ({ employees, onDelete }) => {
       <table>
         <thead>
           <tr>
-            <th>Name
+
+            <th>{headers[1]}
               <button onClick={() => { setFilteredEmployees([...filteredEmployees.sort(compare("name"))]); }}>▲</button>
               <button onClick={() => { setFilteredEmployees([...filteredEmployees.sort(compare("-name"))]) }}>▼</button>
             </th>
-            <th>Level
-              <button onClick={() => { setFilteredEmployees([...filteredEmployees.sort(compare("level"))]); }}>▲</button>
-              <button onClick={() => { setFilteredEmployees([...filteredEmployees.sort(compare("-level"))]) }}>▼</button>
-              <select ref={levelRef} onChange={() => {
+            <th>{headers[2]}
+              <button onClick={() => { setFilteredEmployees([...filteredEmployees.sort(employees[0].level?compare("level"):compare("type"))]); }}>▲</button>
+              <button onClick={() => { setFilteredEmployees([...filteredEmployees.sort(employees[0].level?compare("-level"):compare("-type"))]) }}>▼</button>
+              {headers[0] === "Employees" ? <><select ref={levelRef} onChange={() => {
 
                 if (levelRef.current.value === "Filter by level")
                   if (positionRef.current.value === "Filter by position")
-                    setFilteredEmployees(employees)
+                    setFilteredEmployees(pageEmployees)
                   else
-                    setFilteredEmployees(employees.filter(employee => employee.position === positionRef.current.value))
+                    setFilteredEmployees(pageEmployees.filter(employee => employee.position === positionRef.current.value))
                 else
                   if (positionRef.current.value === "Filter by position")
-                    setFilteredEmployees(employees.filter(employee => employee.level === levelRef.current.value))
+                    setFilteredEmployees(pageEmployees.filter(employee => employee.level === levelRef.current.value))
                   else
-                    setFilteredEmployees(employees.filter(employee => employee.level === levelRef.current.value && employee.position === positionRef.current.value))
+                    setFilteredEmployees(pageEmployees.filter(employee => employee.level === levelRef.current.value && employee.position === positionRef.current.value))
 
               }}>
                 <option>Filter by level</option>
@@ -50,23 +55,24 @@ const EmployeeTable = ({ employees, onDelete }) => {
                 <option>Senior</option>
                 <option>Expert</option>
                 <option>Godlike</option>
-              </select>
+              </select></>
+                : null}
             </th>
-            <th>Position
-              <button onClick={() => { setFilteredEmployees([...filteredEmployees.sort(compare("position"))]); }}>▲</button>
-              <button onClick={() => { setFilteredEmployees([...filteredEmployees.sort(compare("-position"))]) }}>▼</button>
-              <select ref={positionRef} onChange={() => {
+            <th>{headers[3]}
+              <button onClick={() => { setFilteredEmployees([...filteredEmployees.sort(employees[0].position?compare("position"):compare("amount"))]); }}>▲</button>
+              <button onClick={() => { setFilteredEmployees([...filteredEmployees.sort(employees[0].position?compare("-position"):compare("-amount"))]) }}>▼</button>
+              {headers[0] === "Employees" ? <><select ref={positionRef} onChange={() => {
 
                 if (levelRef.current.value === "Filter by level")
                   if (positionRef.current.value === "Filter by position")
-                    setFilteredEmployees(employees) 
+                    setFilteredEmployees(pageEmployees)
                   else
-                    setFilteredEmployees(employees.filter(employee => employee.position === positionRef.current.value))
+                    setFilteredEmployees(pageEmployees.filter(employee => employee.position === positionRef.current.value))
                 else
                   if (positionRef.current.value === "Filter by position")
-                    setFilteredEmployees(employees.filter(employee => employee.level === levelRef.current.value))
+                    setFilteredEmployees(pageEmployees.filter(employee => employee.level === levelRef.current.value))
                   else
-                    setFilteredEmployees(employees.filter(employee => employee.level === levelRef.current.value && employee.position === positionRef.current.value))
+                    setFilteredEmployees(pageEmployees.filter(employee => employee.level === levelRef.current.value && employee.position === positionRef.current.value))
 
               }}>
                 <option>Filter by position</option>
@@ -79,23 +85,29 @@ const EmployeeTable = ({ employees, onDelete }) => {
                 <option>Director</option>
                 <option>Joker</option>
                 <option>Superhero</option>
-              </select>
+              </select></>
+                : null}
             </th>
             <th>
-              <button onClick={() => { setFilteredEmployees(employees); positionRef.current.value = "Filter by position"; levelRef.current.value = "Filter by level" }}>Clear Filters</button>
+              <button onClick={() => { setFilteredEmployees(employees.slice((page - 2) * 10, (page - 1) * 10)); setPage(page - 1) }} disabled={page === 1}>◀</button>
+              Page {page}/{maxPages}
+              <button onClick={() => { ; setFilteredEmployees(employees.slice(page * 10, (page + 1) * 10)); setPage(page + 1) }} disabled={page === maxPages}>▶</button>
+              <button onClick={() => { setFilteredEmployees(pageEmployees); positionRef.current.value = "Filter by position"; levelRef.current.value = "Filter by level" }}>Clear Filters</button>
             </th>
+
           </tr>
         </thead>
         <tbody>
           {filteredEmployees.map((employee) => (
             <tr key={employee._id}>
               <td>{employee.name}</td>
-              <td>{employee.level}</td>
-              <td>{employee.position}</td>
+              <td>{employee.level?employee.level:employee.type}</td>
+              <td>{employee.position?employee.position:employee.amount}</td>
               <td>
-                <Link to={`/update/${employee._id}`}>
+                <Link  to={headers[0] === "Employees"?{pathname:`/update/${employee._id}`,state:{equipments:equipments}}:`/equipment/update/${employee._id}`}>
                   <button type="button">Update</button>
                 </Link>
+                <button type="button" onClick={()=>{navigate(`/update/${employee._id}`,{state:{equipments:equipments}})}}>Update navigate</button>
                 <button type="button" onClick={() => onDelete(employee._id)}>
                   Delete
                 </button>
