@@ -7,7 +7,7 @@ const EmployeeSchema = new Schema({
   name: String,
   level: String,
   position: String,
-  hasEqipment:Boolean,
+  yearsOfExperience:Number,
   equipment:{
     name:String,
     type:String,

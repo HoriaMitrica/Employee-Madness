@@ -48,6 +48,7 @@ const router = createBrowserRouter([
         path: "/create/equipment",
         element: <EmployeeCreator action={"equipments"}/>,
       },
+
       {
         path: "/equipments",
         element: <EquipmentList/>,
@@ -55,7 +56,11 @@ const router = createBrowserRouter([
       {
         path: "/equipment/update/:id",
         element: <EmployeeUpdater action={"equipments"}/>,
-      }
+      },
+      {
+        path: "/years-of-experience/:years",
+        element: <EmployeeList/>,
+      },
     ],
   },
 ]);

@@ -1,6 +1,8 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, } from "react";
+import { useParams } from "react-router-dom";
 import Loading from "../Components/Loading";
 import EmployeeTable from "../Components/EmployeeTable";
+import ErrorPage from "./ErrorPage";
 
 const fetchEmployees = (signal) => {
   return fetch("/api/employees", { signal }).then((res) => res.json());
@@ -14,10 +16,13 @@ const deleteEmployee = (id) => {
   );
 };
 
-const EmployeeList = ({nameFilter}) => {
+const EmployeeList = ({ nameFilter, shownByYears }) => {
   const [loading, setLoading] = useState(true);
   const [data, setData] = useState(null);
   const [availableEqipments, setAvailableEquipments] = useState([]);
+  const { years } = useParams();
+  var reg = /^[+]?\d+([.]\d+)?$/
+
   const handleDelete = (id) => {
     deleteEmployee(id).catch((err) => {
       console.log(err);
@@ -30,15 +35,18 @@ const EmployeeList = ({nameFilter}) => {
 
   useEffect(() => {
     const controller = new AbortController();
-fetchEquipments(controller.signal)
-.then((equipments)=>setAvailableEquipments([...equipments]))
+    fetchEquipments(controller.signal)
+      .then((equipments) => setAvailableEquipments([...equipments]))
     fetchEmployees(controller.signal)
       .then((employees) => {
         setLoading(false);
-        if(nameFilter!==undefined)
-        setData(employees.filter(employee=>employee.name.indexOf(nameFilter)!==-1));
-        else
-          setData(employees)
+        if (nameFilter !== undefined)
+          setData(employees.filter(employee => employee.name.indexOf(nameFilter) !== -1));
+        else{
+
+            setData(employees)
+        }
+
       })
       .catch((error) => {
         if (error.name !== "AbortError") {
@@ -49,11 +57,15 @@ fetchEquipments(controller.signal)
 
     return () => controller.abort();
   }, []);
+  console.log(data)
   if (loading) {
     return <Loading />;
   }
 
-  return <EmployeeTable  equipments={availableEqipments} headers={["Employees","Name","Level","Position"]} employees={data} onDelete={handleDelete} />;
+  return <EmployeeTable equipments={availableEqipments}
+   headers={["Employees", "Name", "Level", "Position"]}
+  employees={years!==undefined?(data.filter(employee=>employee.yearsOfExperience===parseInt(years))):data} onDelete={handleDelete}
+     />;
 };
 
 export default EmployeeList;

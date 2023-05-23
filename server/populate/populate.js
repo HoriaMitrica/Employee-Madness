@@ -28,6 +28,7 @@ const populateEmployees = async () => {
   }));
   await EquipmentModel.create(...equipments);
   await EmployeeModel.create(...employees);
+  await EmployeeModel.find({level:"Junior"}).updateMany({yearsOfExperience:0})
   console.log("Employees created");
 };
 

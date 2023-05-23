@@ -2,7 +2,6 @@ import { Link,useNavigate } from "react-router-dom";
 import "./EmployeeTable.css";
 import { useState, useRef } from "react"
 const EmployeeTable = ({ headers, employees, onDelete,equipments }) => {
-  console.log(equipments)
   const navigate=useNavigate();
   let maxPages = Math.ceil(employees.length / 10)
   const [page, setPage] = useState(1);
@@ -88,6 +87,7 @@ const EmployeeTable = ({ headers, employees, onDelete,equipments }) => {
               </select></>
                 : null}
             </th>
+            <th>Years of experience</th>
             <th>
               <button onClick={() => { setFilteredEmployees(employees.slice((page - 2) * 10, (page - 1) * 10)); setPage(page - 1) }} disabled={page === 1}>◀</button>
               Page {page}/{maxPages}
@@ -103,10 +103,9 @@ const EmployeeTable = ({ headers, employees, onDelete,equipments }) => {
               <td>{employee.name}</td>
               <td>{employee.level?employee.level:employee.type}</td>
               <td>{employee.position?employee.position:employee.amount}</td>
+              <td>{employee.yearsOfExperience}</td>
+              
               <td>
-                <Link  to={headers[0] === "Employees"?{pathname:`/update/${employee._id}`,state:{equipments:equipments}}:`/equipment/update/${employee._id}`}>
-                  <button type="button">Update</button>
-                </Link>
                 <button type="button" onClick={()=>{navigate(`/update/${employee._id}`,{state:{equipments:equipments}})}}>Update navigate</button>
                 <button type="button" onClick={() => onDelete(employee._id)}>
                   Delete

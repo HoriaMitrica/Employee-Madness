@@ -87,6 +87,7 @@ app.post("/api/equipments/", async (req, res, next) => {
 
 app.patch("/api/employees/:id", async (req, res, next) => {
   const employee = req.body;
+  console.log(employee)
   try {
     const updated = await req.employee.set(employee).save();
     return res.json(updated);

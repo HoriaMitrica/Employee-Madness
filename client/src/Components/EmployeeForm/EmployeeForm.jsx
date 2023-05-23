@@ -45,13 +45,23 @@ const EmployeeForm = ({ onSave, disabled, employee, onCancel,equipments }) => {
           id="position"
         />
       </div>
+      {employee?employee.level!=="Junior"?<>
       <div className="control">
+        <label htmlFor="experience">Years of experience:</label>
+        <input
+          defaultValue={employee ? employee.yearsOfExperience : null}
+          name="yearsOfExperience"
+          id="experience"
+        />
+      </div>
+      </>:null:null}
+      {/* <div className="control">
         <label htmlFor="equipment">Equipment:</label>
         <select defaultValue={employee ? employee.equipment : null}>
           <option>Select equipment</option>
           {equipments.map(equipment=><option>{equipment.name}</option>)}
         </select>
-      </div>
+      </div> */}
 
       <div className="buttons">
         <button type="submit" disabled={disabled}>
